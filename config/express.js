@@ -14,6 +14,7 @@ function initExpress(app) {
 
     app.use(function(req, res, next){
         console.log(`API call ${dateHelper.formattedDate()} and it is a ${dateHelper.test()}`);
+        req.resources = req.resources || {};
         next();
     });
 }

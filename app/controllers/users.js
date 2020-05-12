@@ -13,26 +13,28 @@ module.exports = {
     deleteUsers: deleteUsers
 }
 
-function getUsers(req, res, next){
+function getUsers(req, res, next) {
     console.log('GET users from controller');
-    
-    User.find(function(err, result) {
-        if(err){
+
+    User.find(function (err, result) {
+        if (err) {
             return res.status(400).json({
                 status: 'Error',
                 message: 'On get users'
             })
-            // console.log(err);
         }
+        console.log("req res", req.resources);
 
-        return res.json({data: result});
+        req.resources.users = result;
+        next();
+        // return res.json({data: result});
     })
 }
 
-function getUserById(req, res, next){
+function getUserById(req, res, next) {
     console.log("GET user by id");
-    console.log("params:" , req.params);
-    console.log("query:" , req.query);
+    console.log("params:", req.params);
+    console.log("query:", req.query);
 
     // User.findById(req.params.id, function(err, result) {
     //     if(err) {
@@ -42,23 +44,23 @@ function getUserById(req, res, next){
     //     return res.json({data: result});
     // })
 
-    User.find({_id: req.params.id}, function(err, result) {
-        if(err) {
+    User.find({ _id: req.params.id }, function (err, result) {
+        if (err) {
             console.log(err);
         }
 
-        return res.json({data: result});
+        return res.json({ data: result });
     })
 }
 
-function createUsers(req, res, next){
+function createUsers(req, res, next) {
     console.log('POST users from controller');
     console.log('POST received ' + req.body);
 
-    const user = new User({name: req.body.name, email: req.body.email});
+    const user = new User({ name: req.body.name, email: req.body.email });
 
-    user.save(function(err,response){
-        if(err){
+    user.save(function (err, response) {
+        if (err) {
             return res.status(400).json({
                 status: 'Error',
                 message: 'On create users'
@@ -66,7 +68,7 @@ function createUsers(req, res, next){
             // console.log(err);
         }
 
-        return res.json({data: response});
+        return res.json({ data: response });
     })
     console.log('after save');
     // return res.json({message: 'message post'});
@@ -75,24 +77,50 @@ function createUsers(req, res, next){
 function updateUsers(req, res, next) {
     console.log('PUT users');
 
-    User.findOneAndUpdate(req.params.id, req.body, {new: true}, function(err, response) {
-        if(err){
+    User.findOneAndUpdate(req.params.id, req.body, { new: true }, function (err, response) {
+        if (err) {
             return next(err);
         }
 
-        return res.json({data: response});
+        return res.json({ data: response });
     })
 }
 
 function deleteUsers(req, res, next) {
     console.log('DELETE users');
 
-    User.findOneAndDelete(req.params.id, function(err, response) {
-        if(err) {
+    User.findOneAndDelete(req.params.id, function (err, response) {
+        if (err) {
             console.log('err', err);
         }
 
-        return res.json({data: response});
+        return res.json({ data: response });
     })
     console.log('after delete');
 }
+
+// function getReports(req, res, next) {
+//     User.find(function (err, resultUsers) {
+//         if (err) {
+//             return res.status(400).json({
+//                 status: 'Error',
+//                 message: 'On get users'
+//             })
+//             // console.log(err);
+//         }
+
+//         Car
+//             .find()
+//             // .populate('user', 'name')
+//             .exec(function (err, resultStories) {
+//                 if (err) {
+//                     next(err);
+//                 }
+
+//                 const reports = resultUsers.concat(resultStories);
+//                 return res.json({ data: reports });
+//             })
+
+//         // return res.json({data: result});
+//     })
+// }
